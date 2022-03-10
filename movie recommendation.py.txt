@@ -1,0 +1,41 @@
+#import all necessary libraries
+import os
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('seaborn-bright')
+%matplotlib inline 
+#import ratings file in a pandas dataframe
+ratings_data=pd.read_csv("ratings.csv")
+ratings_data.head()
+
+movie_names=pd.read_csv("movies.csv")
+movie_names.head()
+
+movie_data=pd.merge(ratings_data,movie_names,on='movieId')
+movie_data.head()
+creating a dataframe for analysis
+
+trend=pd.DataFrame(movie_data.groupby('title')['rating'].mean())
+trend['total number of ratings'] = pd.DataFrame(movie_data.groupby('title')['rating'].count()) 
+trend.head()
+
+plotting rounded-up ratings with number of movies
+
+plt.figure(figsize =(10, 4))
+ax=plt.barh(trend['rating'].round(),trend['total number of ratings'],color='b')
+plt.show()
+
+Creating bar graph descibibg number of reviews for first 25 movies
+
+plt.figure(figsize =(10, 4))
+ax=plt.subplot()
+ax.bar(trend.head(25).index,trend['total number of ratings'].head(25),color='b')
+ax.set_xticklabels(trend.index,rotation=40,fontsize='12',horizontalalignment="right")
+ax.set_title("Total Number of reviews for each movie")
+plt.show()
+
+
+calculating mean rating of all movies and check the popular high rating movies
+
+movie_data.groupby('title')['rating'].mean().sort_values(ascending=False).head()
